@@ -1,0 +1,84 @@
+extends layout
+
+include _includes/sharedHTMLfunctions
+
+block content
+  .row.banner
+    .col-12
+      h1= pageHeader.title
+  .row
+    .col-12.col-md-8
+      form#create_shop(action='', method='post', role='form')
+        .rendered-form
+          .formbuilder-text.form-group.field-shop_name
+            label.formbuilder-text-label(for='shop_name')
+              | Shop Name
+              span.formbuilder-required *
+              span.tooltip-element(tooltip="What's the name of your Shop?")
+            input#shop_name.form-control(type='text', placeholder='Name', name='shop_name', access='false', title="What's the name of your Shop?", required='required', aria-required='true')
+          .formbuilder-text.form-group.field-shop_address
+            label.formbuilder-text-label(for='shop_address')
+              | Address
+              span.formbuilder-required *
+              span.tooltip-element(tooltip="What's the address of your shop?")
+            input#shop_address.form-control(type='text', placeholder='Address', name='shop_address', access='false', title="What's the address of your shop?", required='required', aria-required='true')
+          .formbuilder-number.form-group.field-shop_lng
+            label.formbuilder-number-label(for='shop_lng')
+              | Longitude
+              span.tooltip-element(tooltip="What's the Longitudinal position of your shop?")
+            input#shop_lng.form-control(type='number', placeholder='0.000000', name='shop_lng', access='false', min='-180', max='180', step='0.0001', title="What's the Longitudinal position of your shop?")
+          .formbuilder-number.form-group.field-shop_lat
+            label.formbuilder-number-label(for='shop_lat')
+              | Latitude
+              span.tooltip-element(tooltip="What's the Latitudinal position of your shop?")
+            input#shop_lat.form-control(type='number', placeholder='0.000000', name='shop_lat', access='false', min='-90', max='90', step='0.0001', title="What's the Latitudinal position of your shop?")
+          .formbuilder-checkbox-group.form-group.field-shop_opendays
+            label.formbuilder-checkbox-group-label(for='shop_opendays')
+              | Days open
+              span.formbuilder-required *
+              span.tooltip-element(tooltip='What days are you open?')
+            .checkbox-group
+              .formbuilder-checkbox-inline
+                input#shop_opendays-0(name='shop_opendays', aria-required='true', value='Monday', type='checkbox')
+                label(for='shop_opendays-0') Monday
+              .formbuilder-checkbox-inline
+                input#shop_opendays-1(name='shop_opendays', aria-required='true', value='Tuesday', type='checkbox')
+                label(for='shop_opendays-1') Tuesday
+              .formbuilder-checkbox-inline
+                input#shop_opendays-2(name='shop_opendays', aria-required='true', value='Wednesday', type='checkbox')
+                label(for='shop_opendays-2') Wednesday
+              .formbuilder-checkbox-inline
+                input#shop_opendays-3(name='shop_opendays', aria-required='true', value='Thursday', type='checkbox')
+                label(for='shop_opendays-3') Thursday
+              .formbuilder-checkbox-inline
+                input#shop_opendays-4(name='shop_opendays', aria-required='true', value='Friday', type='checkbox')
+                label(for='shop_opendays-4') Friday
+              .formbuilder-checkbox-inline
+                input#shop_opendays-5(name='shop_opendays', aria-required='true', value='Saturday', type='checkbox')
+                label(for='shop_opendays-5') Saturday
+              .formbuilder-checkbox-inline
+                input#shop_opendays-6(name='shop_opendays', aria-required='true', value='Sunday', type='checkbox')
+                label(for='shop_opendays-6') Sunday
+          .formbuilder-text.form-group.field-shop_opening
+            label.formbuilder-text-label(for='shop_opening')
+              | Opening Time
+              span.formbuilder-required *
+              span.tooltip-element(tooltip='What time do you open?')
+            input#shop_opening.form-control(type='time', name='shop_opening', title='What time do you open?', required='required', aria-required='true')
+          .formbuilder-text.form-group.field-shop_closed
+            label.formbuilder-text-label(for='shop_closed')
+              | Closing Time
+              span.formbuilder-required *
+              span.tooltip-element(tooltip='What time do you close?')
+            input#shop_closed.form-control(type='time', name='shop_closing', title='What time do you close?', required='required', aria-required='true')
+          .formbuilder-radio-group.form-group.field-shop_open
+            label.formbuilder-radio-group-label(for='shop_open') Are you currently open?
+            .radio-group
+              .formbuilder-radio
+                input#shop_open-0(name='shop_open', value='true', type='radio')
+                label(for='shop_open-0') No
+              .formbuilder-radio
+                input#shop_open-1(name='shop_open', value='false', type='radio')
+                label(for='shop_open-1') Yes
+        button.btn.btn-primary.float-right Add my review
+    .col-12.col-md-4

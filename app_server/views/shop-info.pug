@@ -1,0 +1,56 @@
+extends layout
+
+include _includes/sharedHTMLfunctions
+
+block content
+  .row.banner
+    .col-12
+      h1= pageHeader.title
+  .row
+    .col-12.col-lg-9
+      .row
+        .col-12.col-md-6
+          p #{foods.length} Items listed
+          p #{shop.address}
+          .card.card-primary
+            .card-block
+              h2.card-title Opening hours
+              p.card-text #{shop.openingtime} - #{shop.closingtime}
+          .card.card-primary
+            .card-block
+              h2.card-title Facilities
+                br
+                each day in shop.days.split(",")
+                  span.badge.badge-warning
+                    i.fa.fa-check
+                    | &nbsp;#{day}
+                  | &nbsp;
+        .col-12.col-md-6.location-map
+          .card.card-primary
+            .card-block
+              h2.card-title Location map
+              img.img-fluid.rounded(src=`http://maps.googleapis.com/maps/api/staticmap?center=${shop.coords.lat},${shop.coords.lng}&zoom=17&size=400x350&sensor=false&markers=${shop.coords.lat},${shop.coords.lng}&scale=2`)
+      .row
+        .col-12
+          .card.card-primary.review-card
+            .card-block
+              a.btn.btn-primary.float-right(href=`/shop/`)
+                | Add review
+              h2.card-title Customer reviews
+              each food in foods
+                .row.review
+                  .col-12.no-gutters.review-header
+                    span.rating
+                      +outputRating(3)
+                    span.reviewAuthor #{food.name}
+                    small.reviewTimestamp
+                      +formatDate(food.experation)
+                  .col-12
+                    p !{(food.description).replace(/\n/g, '<br/>')}
+              else
+                .row.review
+                  .col-12.no-gutters.review-header
+                    p='no food to show'
+    .col-12.col-lg-3
+      p.lead #{shop.name} #{sidebar.context}
+      p= sidebar.callToAction
