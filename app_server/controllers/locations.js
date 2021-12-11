@@ -1,6 +1,6 @@
 const request = require('request');
 const apiOptions = {
-  server : 'https://foodsharekerry.herokuapp.com/'
+  server : 'https://foodsharekerry.herokuapp.com'
 };
 
 // PUBLIC EXPOSED METHODS
