@@ -103,6 +103,49 @@ const foodReadAll = function (req, res) {
       });
   };
 
+  const foodListByPrice = function (req, res) {
+    var lng = parseFloat(req.body.lng);
+    var lat = parseFloat(req.body.lat);
+    food
+    .find()
+      .populate('_shopId')
+      .exec((err, Food) => {
+        if (!Food) {
+          res	
+            .status(404) 
+            .json({	
+              "message": "foodid not found"
+            });	 
+          return;
+        } else if (err) {
+          res	
+            .status(404) 
+            .json(err); 
+          return; 	
+        }
+        var foodsUnsorted = [];
+        Food.forEach(food => {
+          var meters = 0;
+          var rawdistance = Math.sqrt(Math.pow((lng - food._shopId.coords[0]),2)+Math.pow((lat - food._shopId.coords[1]),2));
+          while(rawdistance >= 0.001452)
+          {
+            rawdistance = rawdistance - 0.001452;
+            meters = meters+100;
+          }
+          foodsUnsorted.push({
+            _id:food._id,
+            name:food.name,
+            description:food.description,
+            experation:food.experation,
+            price:food.price,
+            _shopId:food._shopId,
+            distance:meters});
+        });
+        foodsUnsorted.sort(GetSortOrder("price"));
+        res.status(200).json(foodsUnsorted);
+      });
+  };
+
   const foodListByDistance = function (req, res) {
     var lng = parseFloat(req.body.lng);
     var lat = parseFloat(req.body.lat);
@@ -123,7 +166,7 @@ const foodReadAll = function (req, res) {
             .json(err); 
           return; 	
         }
-        var locations = [];
+        var foodsUnsorted = [];
         Food.forEach(food => {
           var meters = 0;
           var rawdistance = Math.sqrt(Math.pow((lng - food._shopId.coords[0]),2)+Math.pow((lat - food._shopId.coords[1]),2));
@@ -132,8 +175,7 @@ const foodReadAll = function (req, res) {
             rawdistance = rawdistance - 0.001452;
             meters = meters+100;
           }
-
-          locations.push({
+          foodsUnsorted.push({
             _id:food._id,
             name:food.name,
             description:food.description,
@@ -142,9 +184,21 @@ const foodReadAll = function (req, res) {
             _shopId:food._shopId,
             distance:meters});
         });
-        res.status(200).json(locations);
+        foodsUnsorted.sort(GetSortOrder("distance"));
+        res.status(200).json(foodsUnsorted);
       });
   };
+
+function GetSortOrder(prop) {    
+  return function(a, b) {    
+    if (a[prop] > b[prop]) {    
+      return 1;    
+    } else if (a[prop] < b[prop]) {    
+      return -1;    
+    }    
+      return 0;    
+  }    
+}
 
 const foodReadAllFromShop = function (req, res) {
   if (req.params && req.params.shopid) {
@@ -273,6 +327,7 @@ module.exports = {
   foodRead,
   foodReadAll,
   foodReadAllFromShop,
+  foodListByPrice,
   foodListByDistance,
   foodUpdate,
   foodDelete

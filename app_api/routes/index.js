@@ -9,12 +9,15 @@ router
   .get(ctrlShop.shopReadAll)
   .post(ctrlShop.shopCreate);
 
-  router
+router
   .route('/food')
   .get(ctrlFood.foodReadAll)
+  .post(ctrlFood.foodListByPrice);
+
+router
+  .route('/shop/food')
   .post(ctrlFood.foodListByDistance);
 
-  
 router
   .route('/shop/:shopid')
   .get(ctrlShop.shopRead)
