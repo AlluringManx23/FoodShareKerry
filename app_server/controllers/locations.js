@@ -1,10 +1,8 @@
 const request = require('request');
 const apiOptions = {
-  server : 'http://localhost:3000'
+  server : 'https://foodsharekerry.herokuapp.com/'
 };
-if (process.env.NODE_ENV === 'production') {
-  apiOptions.server = 'https://foodsharekerry.herokuapp.com/';
-}
+
 // PUBLIC EXPOSED METHODS
 
 /* GET 'home' page */
