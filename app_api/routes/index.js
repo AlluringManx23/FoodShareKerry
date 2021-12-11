@@ -6,9 +6,15 @@ const ctrlFood = require('../controllers/food');
 // locations
 router
   .route('/shop')
-  //get(ctrlShop.shopListByAmount)
+  .get(ctrlShop.shopReadAll)
   .post(ctrlShop.shopCreate);
 
+  router
+  .route('/food')
+  .get(ctrlFood.foodReadAll)
+  .post(ctrlFood.foodListByDistance);
+
+  
 router
   .route('/shop/:shopid')
   .get(ctrlShop.shopRead)
@@ -18,6 +24,7 @@ router
 // reviews
 router
   .route('/shop/:shopid/food')
+  .get(ctrlFood.foodReadAllFromShop)
   .post(ctrlFood.foodCreate);
 
 router
