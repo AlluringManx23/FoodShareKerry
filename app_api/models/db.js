@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 let dbURI = 'mongodb+srv://main:testing123@penelope.feiqj.mongodb.net/food_share';
-if (process.env.NODE_ENV === 'production') {
-  dbURI = process.env.MONGODB_URI;
-}
+
 mongoose.connect(dbURI);
 
 mongoose.connection.on('connected', () => {
