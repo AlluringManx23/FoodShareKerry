@@ -18,7 +18,7 @@ block content
               p.card-text #{shop.openingtime} - #{shop.closingtime}
           .card.card-primary
             .card-block
-              h2.card-title Days Open
+              h2.card-title Facilities
                 br
                 each day in shop.days.split(",")
                   span.badge.badge-warning
@@ -34,8 +34,8 @@ block content
         .col-12
           .card.card-primary.review-card
             .card-block
-              a.btn.btn-primary.float-right(href=`/shop/${shop._id}/food/new`)
-                | Add Food
+              a.btn.btn-primary.float-right(href=`/shop/`)
+                | Add review
               h2.card-title Customer reviews
               each food in foods
                 .row.review

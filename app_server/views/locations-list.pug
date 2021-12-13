@@ -15,10 +15,10 @@ block content
           .card-block
             h4
               a(href=`/shop/${shop._shopId._id}/food/${shop._id}`)= shop.name
-              small &nbsp;
+              small &nbsp; Expires: #{shop.experation}
               span.badge.badge-pill.badge-default.float-right= shop.distance
-            p.address= shop.address
-              span.badge.badge-pill.badge-default.float-right= '200km'
+            p.address= shop.description
+              span.badge.badge-pill.badge-default.float-right= `€${shop.price}`
 
 
     .col-12.col-md-4

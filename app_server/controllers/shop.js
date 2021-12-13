@@ -3,23 +3,20 @@ const apiOptions = {
   server : 'http://localhost:3000'
 };
 if (process.env.NODE_ENV === 'production') {
-  apiOptions.server = 'https://pure-temple-67771.herokuapp.com';
+  apiOptions.server = 'https://foodsharekerry.herokuapp.com';
 }
-
 // PUBLIC EXPOSED METHODS
 
 /* GET 'home' page */
-const homelist = function(req, res){
-  const path = '/api/locations';
+const shoplist = function(req, res){
+  const path = '/api/food';
   const requestOptions = {
     url : apiOptions.server + path,
-    method : 'GET',
-    json : {},
-    qs : {
-      lng : -0.7992599,
-      lat : 51.378091,
-      maxDistance : 20
-    }
+    method : 'POST',
+    json : {
+      lng : -9.687677621841432,
+      lat : 52.27999373266711,
+      maxDistance : 20}
   };
   request(
     requestOptions,
@@ -37,53 +34,54 @@ const homelist = function(req, res){
 
 /* GET 'Location info' page */
 const locationInfo = function(req, res){
-  _getLocationInfo(req, res, (req, res, responseData) => {
-    console.log(responseData);
-    _renderDetailPage(req, res, responseData);
-  });
-};
+  _getShopInfo(req, res, (req, res, shopData) => {
+    console.log(shopData);
+  _getFoodInfo(req, res, (req, res, foodData) => {
+    console.log(foodData);
+    _renderDetailPage(req, res, shopData ,foodData);
+  }
+);
+});
+}
 
 /* GET 'Add review' page */
-const addReview = function(req, res){
-  _getLocationInfo(req, res, (req, res, responseData) => {
-    _renderReviewForm(req, res, responseData);
-  });
+const addShop = function(req, res){
+    _renderAddShopForm(req, res);
 };
 
-const doAddReview = function(req, res) {
-  const locationid = req.params.locationid;
-  const path = `/api/locations/${locationid}/reviews`;
+const doAddShop = function(req, res) {
+  const path = `/api/shop/`;
   const postdata = {
-    author: req.body.name,
-    rating: parseInt(req.body.rating, 10),
-    reviewText: req.body.review
+    name: req.body.shop_name,
+    address: req.body.shop_address,
+    lng: req.body.shop_lng,
+    lat: req.body.shop_lat,
+    days: req.body.shop_opendays,
+    opening: req.body.shop_opening,
+    closing:req.body.shop_closing,
+    closed:req.body.shop_open
   };
+  console.log(postdata)
   const requestOptions = {
     url : apiOptions.server + path,
     method : 'POST',
     json : postdata
   };
-  if (!postdata.author || !postdata.rating || !postdata.reviewText) {
-    res.redirect(`/location/${locationid}/review/new?err=val`);
-  } else {
     request(
       requestOptions,
       (err, response, body) => {
         if (response.statusCode === 201) {
-          res.redirect(`/location/${locationid}`);
-        } else if (response.statusCode === 400 && body.name && body.name === 'ValidationError' ) {
-          res.redirect(`/location/${locationid}/review/new?err=val`);
-        } else {
+          res.redirect(`/location/${body._id}`);
+        }else {
           _showError(req, res, response.statusCode);
         }
       }
     );
-  }
 };
 
 // PRIVATE METHODS
-const _getLocationInfo = function(req, res, callback) {
-  const path = `/api/locations/${req.params.locationid}`;
+const _getShopInfo = function(req, res, callback) {
+  const path = `/api/shop/${req.params.shopid}`;
   const requestOptions = {
     url : apiOptions.server + path,
     method : 'GET',
@@ -106,6 +104,26 @@ const _getLocationInfo = function(req, res, callback) {
   );
 };
 
+const _getFoodInfo = function(req, res, callback) {
+  const path = `/api/shop/${req.params.shopid}/food`;
+  const requestOptions = {
+    url : apiOptions.server + path,
+    method : 'GET',
+    json : {}
+  };
+  request(
+    requestOptions,
+    (err, response, body) => {
+      let data = body;
+      if (response.statusCode === 200) {                    
+        callback(req, res, data);
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    }
+  );
+};
+
 const _renderHomepage = function(req, res, responseBody){
   let message = null;
   if (!(responseBody instanceof Array)) {
@@ -113,39 +131,40 @@ const _renderHomepage = function(req, res, responseBody){
     responseBody = [];
   } else {
     if (!responseBody.length) {
-      message = 'No places found nearby';
+      message = 'No food found nearby';
     }
   }
-  res.render('locations-list', {
+  res.render('shop-list', {
     title: 'Loc8r - find a place to work with wifi',
     pageHeader: {
       title: 'Loc8r',
       strapline: 'Find places to work with wifi near you!'
     },
     sidebar: 'Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you\'re looking for.',
-    locations: responseBody,
+    shops: responseBody,
     message: message
   });
 };
 
-const _renderDetailPage = function(req, res, locDetail) {
-  res.render('location-info', {
-    title: locDetail.name,
+const _renderDetailPage = function(req, res, shopData,foodData) {
+  res.render('shop-info', {
+    title: shopData.name,
     pageHeader: {
-      title: locDetail.name
+      title: shopData.name
     },
     sidebar: {
       context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
       callToAction: 'If you\'ve been and you like it - or if you don\'t - please leave a review to help other people just like you.'
     },
-    location: locDetail
+    shop: shopData,
+    foods: foodData
   });
 };
 
-const _renderReviewForm = function(req, res, locDetail) {
-  res.render('location-review-form', {
-    title: `Review ${locDetail.name} on Loc8r`,
-    pageHeader: { title: `Review ${locDetail.name}` },
+const _renderAddShopForm = function(req, res) {
+  res.render('add-shop-form', {
+    title: `Add New Shop`,
+    pageHeader: { title: `New Shop` },
     error: req.query.err
   });
 };
@@ -190,8 +209,8 @@ const _showError = function (req, res, status) {
 
 
 module.exports = {
-  homelist,
+  shoplist,
   locationInfo,
-  addReview,
-  doAddReview
+  addShop,
+  doAddShop
 };

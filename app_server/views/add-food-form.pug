@@ -1,0 +1,37 @@
+extends layout
+
+include _includes/sharedHTMLfunctions
+
+block content
+  .row.banner
+    .col-12
+      h1= pageHeader.title
+  .row
+    .col-12.col-md-8
+      form#create_shop(action='', method='post', role='form')
+        .rendered-form
+          .formbuilder-text.form-group.field-food_name
+            label.formbuilder-text-label(for='food_name')
+              | Name
+              span.formbuilder-required *
+              span.tooltip-element(tooltip="What's the name of the food")
+            input#food_name.form-control(type='text' placeholder='Name' name='food_name' access='false' title="What's the name of the food" required='required' aria-required='true')
+          .formbuilder-textarea.form-group.field-food_description
+            label.formbuilder-textarea-label(for='food_description')
+              | Description
+              span.tooltip-element(tooltip='Please Describe the food')
+            textarea#food_description.form-control(type='textarea' name='food_description' access='false' rows='0' title='Please Describe the food')
+          .formbuilder-number.form-group.field-food_price
+            label.formbuilder-number-label(for='food_price')
+              | Price
+              span.formbuilder-required *
+              span.tooltip-element(tooltip='How much does it cost?')
+            input#food_price.form-control(type='number' placeholder='0.00' name='food_price' access='false' min='0' step='0.01' required='required' title='How much does it cost?')
+          .formbuilder-date.form-group.field-food_experation
+            label.formbuilder-date-label(for='food_experation')
+              | Expiration Date
+              span.formbuilder-required *
+              span.tooltip-element(tooltip='When does the food Expire')
+            input#food_experation.form-control(type='date' name='food_experation' access='false' title='When does the food Expire' required='required' aria-required='true')
+          button.btn.btn-primary.float-right Add new Food
+    .col-12.col-md-4

@@ -1,7 +1,10 @@
 const request = require('request');
 const apiOptions = {
-  server : 'https://foodsharekerry.herokuapp.com'
+  server : 'http://localhost:3000'
 };
+if (process.env.NODE_ENV === 'production') {
+  apiOptions.server = 'https://foodsharekerry.herokuapp.com';
+}
 
 // PUBLIC EXPOSED METHODS
 
@@ -22,8 +25,8 @@ const homelist = function(req, res){
       let data = body;
       if (response.statusCode === 200 && data.length) {
         for (let i = 0; i < data.length; i++) {
-          console.log(data[i].distance);
           data[i].distance = _formatDistance(data[i].distance);
+          data[i].experation = _formatDate(data[i].experation);
         }
       }
       _renderHomepage(req, res, data);
@@ -33,32 +36,27 @@ const homelist = function(req, res){
 
 /* GET 'Location info' page */
 const locationInfo = function(req, res){
-  _getShopInfo(req, res, (req, res, shopData) => {
-    console.log(shopData);
-  _getFoodInfo(req, res, (req, res, foodData) => {
-    console.log(foodData);
-    _renderDetailPage(req, res, shopData ,foodData);
-  }
-);
-});
-}
-
-/* GET 'Add review' page */
-const addShop = function(req, res){
-    _renderAddShopForm(req, res);
+  _getLocationInfo(req, res, (req, res, responseData) => {
+    console.log(responseData);
+    _renderDetailPage(req, res, responseData);
+  });
 };
 
-const doAddShop = function(req, res) {
-  const path = `/api/shop/`;
+/* GET 'Add review' page */
+const addFood = function(req, res){
+  _getFoodInfo(req, res, (req, res, responseData) => {
+    _renderReviewForm(req, res, responseData);
+  });
+};
+
+const doAddFood = function(req, res) {
+  const shopid = req.params.shopid;
+  const path = `/api/shop/${shopid}/food`;
   const postdata = {
-    name: req.body.shop_name,
-    address: req.body.shop_address,
-    lng: req.body.shop_lng,
-    lat: req.body.shop_lat,
-    days: req.body.shop_opendays,
-    opening: req.body.shop_opening,
-    closing:req.body.shop_closing,
-    closed:req.body.shop_open
+    name: req.body.food_name,
+    description: req.body.food_description,
+    price: req.body.food_price,
+    experation: req.body.food_experation,
   };
   console.log(postdata)
   const requestOptions = {
@@ -70,8 +68,10 @@ const doAddShop = function(req, res) {
       requestOptions,
       (err, response, body) => {
         if (response.statusCode === 201) {
-          res.redirect(`/location/${body._id}`);
-        }else {
+          res.redirect(`/shop/${shopid}`);
+        } else if (response.statusCode === 400 && body.name && body.name === 'ValidationError' ) {
+          res.redirect(`/shop/${shopid}/food/new?err=val`);
+        } else {
           _showError(req, res, response.statusCode);
         }
       }
@@ -79,7 +79,7 @@ const doAddShop = function(req, res) {
 };
 
 // PRIVATE METHODS
-const _getShopInfo = function(req, res, callback) {
+const _getFoodInfo = function(req, res, callback) {
   const path = `/api/shop/${req.params.shopid}`;
   const requestOptions = {
     url : apiOptions.server + path,
@@ -91,31 +91,7 @@ const _getShopInfo = function(req, res, callback) {
     (err, response, body) => {
       let data = body;
       if (response.statusCode === 200) {
-        data.coords = {
-          lng : body.coords[0],
-          lat : body.coords[1]
-        };                                
-        callback(req, res, data);
-      } else {
-        _showError(req, res, response.statusCode);
-      }
-    }
-  );
-};
-
-const _getFoodInfo = function(req, res, callback) {
-  const path = `/api/shop/${req.params.shopid}/food`;
-  const requestOptions = {
-    url : apiOptions.server + path,
-    method : 'GET',
-    json : {}
-  };
-  request(
-    requestOptions,
-    (err, response, body) => {
-      let data = body;
-      if (response.statusCode === 200) {                    
-        callback(req, res, data);
+        callback(req, res, data);                         
       } else {
         _showError(req, res, response.statusCode);
       }
@@ -145,25 +121,24 @@ const _renderHomepage = function(req, res, responseBody){
   });
 };
 
-const _renderDetailPage = function(req, res, shopData,foodData) {
-  res.render('shop-info', {
-    title: shopData.name,
+const _renderDetailPage = function(req, res, locDetail) {
+  res.render('location-info', {
+    title: locDetail.name,
     pageHeader: {
-      title: shopData.name
+      title: locDetail.name
     },
     sidebar: {
       context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
       callToAction: 'If you\'ve been and you like it - or if you don\'t - please leave a review to help other people just like you.'
     },
-    shop: shopData,
-    foods: foodData
+    location: locDetail
   });
 };
 
-const _renderAddShopForm = function(req, res) {
-  res.render('add-shop-form', {
-    title: `Add New Shop`,
-    pageHeader: { title: `New Shop` },
+const _renderReviewForm = function(req, res, shopDetails) {
+  res.render('add-food-form', {
+    title: `Add new food for ${shopDetails.name}`,
+    pageHeader: { title: `Add Food for ${shopDetails.name}` },
     error: req.query.err
   });
 };
@@ -188,6 +163,12 @@ const _formatDistance = function (distance) {
   }
 };
 
+const _formatDate = function (distance) {
+  var date = distance.split('-');
+  console.log(date);
+  return date[2].split('T')[0]+'/'+date[1]+'/'+date[0];
+};
+
 const _showError = function (req, res, status) {
   let title = '';
   let content = '';
@@ -210,6 +191,6 @@ const _showError = function (req, res, status) {
 module.exports = {
   homelist,
   locationInfo,
-  addShop,
-  doAddShop
+  addFood,
+  doAddFood
 };
