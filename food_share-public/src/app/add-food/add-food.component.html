@@ -1,0 +1,8 @@
+<mat-form-field class="form-control" style="background-color: darkgray;">
+    <mat-label>{{name}}</mat-label>
+    <input name = {{id}} type={{type}} matInput [formControl]="ValidationControl" [errorStateMatcher]="matcher"
+            placeholder={{placeholder}}>
+    <mat-error *ngIf="ValidationControl.hasError('required')">
+    Please enter the <strong>{{name}}</strong> of the food
+    </mat-error>
+</mat-form-field>

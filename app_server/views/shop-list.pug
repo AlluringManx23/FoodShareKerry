@@ -14,16 +14,15 @@ block content
         .card
           .card-block
             h4
-              a(href=`/shop/${shop._shopId._id}`)= `${shop._shopId.name}  `
-              span.badge.badge-pill.badge-default.float-right= shop.distance
-              - if (shop._shopId.closed == false)
+              a(href=`/shop/${shop._id}`)= `${shop.name}  `
+              - if (shop.closed == false)
                 span.badge.badge-pill.badge-default= `Open`
-              - if (shop._shopId.closed == true)
+              - if (shop.closed == true)
                 span.badge.badge-pill.badge-default= `Closed`
-            p=`Open From ${shop._shopId.openingtime} to ${shop._shopId.closingtime}`
-            p.address= shop._shopId.address
+            p=`Open From ${shop.openingtime} to ${shop.closingtime}`
+            p.address= shop.address
             
 
 
     .col-12.col-md-4
-      p.lead= sidebar
+      a.btn.btn-lg.btn-danger(href="/shop/new") Create Shop

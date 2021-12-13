@@ -7,7 +7,8 @@ const bodyParser = require('body-parser');
 require('./app_api/models/db');
 
 const index = require('./app_server/routes/index');
-const apiRoutes = require('./app_api/routes/index');
+const apiFoodRoutes = require('./app_api/routes/food');
+const apiShopRoutes = require('./app_api/routes/shop');
 
 const app = express();
 
@@ -21,9 +22,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'app_public')));
 
 app.use('/', index);
-app.use('/api', apiRoutes);
+app.use('/api', apiFoodRoutes);
+app.use('/api', apiShopRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

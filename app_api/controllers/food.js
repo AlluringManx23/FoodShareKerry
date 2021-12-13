@@ -257,10 +257,10 @@ const foodUpdate = function (req, res) {
           .json(err);
         return;
       }
-      Food.name = req.body.name;
-      Food.description = req.body.description;
-      Food.price = req.body.price;
-      Food.experation = req.body.experation;
+      if(!req.body.name){Food.name = Food.name}else{Food.name = req.body.name};
+      if(!req.body.description){Food.description = Food.description}else{Food.description = req.body.description};
+      if(!req.body.price){Food.price = Food.price}else{Food.price = req.body.price};
+      if(!req.body.experation){Food.experation = Food.experation}else{Food.experation = req.body.experation};
       Food.save((err, food) => {
         if (err) {
           res
@@ -298,7 +298,7 @@ const foodDelete = function (req, res) {
             return;
             }
           res
-          .status(204)
+          .status(200)
           .json(null);
         }
         );}

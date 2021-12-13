@@ -1,0 +1,7 @@
+<mat-form-field class="form-control" style="background-color: darkgray;">
+    <mat-label>Choose the experation date</mat-label>
+    <input name="'food_experation'" matInput [min]="minDate" [matDatepicker]="picker">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  

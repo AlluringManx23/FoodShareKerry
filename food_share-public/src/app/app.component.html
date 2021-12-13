@@ -1,0 +1,18 @@
+<form id="create-food" action="" method="post" role="form">
+    <div class="rendered-form">
+        <div class="formbuilder-text form-group field-food_name">
+            <app-add-food [type]="'text'" [id]= "'food_name'" [name]="'Name'" [placeholder]="''" [required]="''"></app-add-food>
+        </div>
+        <div class="formbuilder-textarea form-group field-food_description">
+            <app-add-food [type]="'text'" [id]= "'food_description'" [name]="'Description'" [placeholder]="''" [required]="''"></app-add-food>
+        </div>
+        <div class="formbuilder-number form-group field-food_price">
+            <app-add-food [type]="'number'" [id]= "'food_price'" [name]="'Price'" [placeholder]="'0.00'" [required]="''"></app-add-food>
+        </div>
+        <div class="formbuilder-date form-group field-food_experation">
+            <app-date-picker></app-date-picker>
+        </div>
+            <input type="submit" class="btn btn-primary float-right" (click)="test()" value="Add new Food">
+    </div>
+</form>
+<div class="col-12 col-md-4"></div>

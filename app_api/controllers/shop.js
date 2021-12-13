@@ -5,13 +5,22 @@ const shop = mongoose.model('Shop');
 // EXPOSED METHODS
 
 const shopCreate = function (req, res) {
+  if(!req.body.lng || !req.body.lat)
+  {
+    var lng = 0;
+    var lat = 0;
+  }
+  else{
+    var lng = req.body.lng;
+    var lat = req.body.lat
+  }
   shop.create({
     name: req.body.name,
     address: req.body.address,
-    coords: [req.body.lng, req.body.lat],
+    coords: [lng, lat],
     days: req.body.days,
-    openingtime: req.body.opening,
-    closingtime: req.body.closing,
+    openingtime: req.body.openingtime,
+    closingtime: req.body.closingtime,
     closed: req.body.closed
   }, (err, Shop) => {
     if (err) {
@@ -106,13 +115,16 @@ const shopUpdate = function (req, res) {
           .json(err);
         return;
       }
-      Shop.name = req.body.name;
-      Shop.address = req.body.address;
-      Shop.coords = [req.body.lng, req.body.lat];
-      Shop.days = req.body.days;
-      Shop.openingtime = req.body.opening;
-      Shop.closingtime = req.body.closing;
-      Shop.closed = req.body.closed;
+      var lng = Shop.coords[0];
+      var lat = Shop.coords[1];
+      if(!req.body.name){Shop.name = Shop.name;}else{Shop.name = req.body.name;}
+      if(!req.body.address){Shop.address = Shop.address;}else{Shop.address = req.body.address;}
+      if(req.body.lng){lng = req.body.lng;}if(req.body.lat){lat = req.body.lat;}
+      Shop.coords = [lng,lat];
+      if(!req.body.days){Shop.days = Shop.days;}else{Shop.days = req.body.days;}
+      if(!req.body.openingtime){Shop.openingtime = Shop.openingtime;}else{Shop.openingtime = req.body.openingtime;}
+      if(!req.body.closingtime){Shop.closingtime = Shop.closingtime;}else{Shop.closingtime = req.body.closingtime;}
+      if(!req.body.closed){Shop.closed = Shop.closed;}else{Shop.closed = req.body.closed;}
       Shop.save((err, Shop) => {
         if (err) {
           res
@@ -149,7 +161,7 @@ const shopDelete = function (req, res) {
                 return;
               }
               res
-                .status(204)
+                .status(200)
                 .json(null);
             }
         );

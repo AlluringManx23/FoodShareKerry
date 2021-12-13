@@ -37,7 +37,6 @@ const homelist = function(req, res){
 /* GET 'Location info' page */
 const locationInfo = function(req, res){
   _getLocationInfo(req, res, (req, res, responseData) => {
-    console.log(responseData);
     _renderDetailPage(req, res, responseData);
   });
 };
@@ -58,7 +57,6 @@ const doAddFood = function(req, res) {
     price: req.body.food_price,
     experation: req.body.food_experation,
   };
-  console.log(postdata)
   const requestOptions = {
     url : apiOptions.server + path,
     method : 'POST',
@@ -109,13 +107,12 @@ const _renderHomepage = function(req, res, responseBody){
       message = 'No food found nearby';
     }
   }
-  res.render('locations-list', {
-    title: 'Loc8r - find a place to work with wifi',
+  res.render('food-list', {
+    title: 'Food Share - Promoting a circular economy',
     pageHeader: {
-      title: 'Loc8r',
-      strapline: 'Find places to work with wifi near you!'
+      title: 'Food Share',
+      strapline: 'Promoting a circular economy'
     },
-    sidebar: 'Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you\'re looking for.',
     shops: responseBody,
     message: message
   });
@@ -165,7 +162,6 @@ const _formatDistance = function (distance) {
 
 const _formatDate = function (distance) {
   var date = distance.split('-');
-  console.log(date);
   return date[2].split('T')[0]+'/'+date[1]+'/'+date[0];
 };
 

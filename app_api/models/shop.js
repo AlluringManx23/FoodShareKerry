@@ -6,7 +6,10 @@ const shopSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    address: String,
+    address: {
+        type:String,
+        required:true
+    },
     coords: {
         type: [Number],
         index: '2dsphere'
@@ -15,8 +18,14 @@ const shopSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    openingtime: String,
-    closingtime: String,
+    openingtime: {
+        type: String,
+        required: true
+    },
+    closingtime: {
+        type: String,
+        required: true
+    },
     closed: {
         type: Boolean,
         required: true

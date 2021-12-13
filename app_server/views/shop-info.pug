@@ -29,28 +29,26 @@ block content
           .card.card-primary
             .card-block
               h2.card-title Location map
-              img.img-fluid.rounded(src=`http://maps.googleapis.com/maps/api/staticmap?center=${shop.coords.lat},${shop.coords.lng}&zoom=17&size=400x350&sensor=false&markers=${shop.coords.lat},${shop.coords.lng}&scale=2`)
+              img.img-fluid.rounded(src=`http://maps.googleapis.com/maps/api/staticmap?center=${shop.coords[0]},${shop.coords[1]}&zoom=17&size=400x350&sensor=false&markers=${shop.coords[0]},${shop.coords[1]}&scale=2`)
       .row
         .col-12
           .card.card-primary.review-card
             .card-block
               a.btn.btn-primary.float-right(href=`/shop/${shop._id}/food/new`)
                 | Add Food
-              h2.card-title Customer reviews
+              h2.card-title Foods For sale
               each food in foods
                 .row.review
                   .col-12.no-gutters.review-header
-                    span.rating
-                      +outputRating(3)
                     span.reviewAuthor #{food.name}
+                    span Experation: 
                     small.reviewTimestamp
                       +formatDate(food.experation)
+                    span.badge.badge-pill.badge-default.float-right= `€${food.price}`
                   .col-12
                     p !{(food.description).replace(/\n/g, '<br/>')}
               else
                 .row.review
                   .col-12.no-gutters.review-header
                     p='no food to show'
-    .col-12.col-lg-3
-      p.lead #{shop.name} #{sidebar.context}
-      p= sidebar.callToAction
+

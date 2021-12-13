@@ -9,19 +9,19 @@ if (process.env.NODE_ENV === 'production') {
 
 /* GET 'home' page */
 const shoplist = function(req, res){
-  const path = '/api/food';
+  const path = '/api/shop';
   const requestOptions = {
     url : apiOptions.server + path,
-    method : 'POST',
+    method : 'GET',
     json : {
       lng : -9.687677621841432,
-      lat : 52.27999373266711,
-      maxDistance : 20}
+      lat : 52.27999373266711}
   };
   request(
     requestOptions,
     (err, response, body) => {
       let data = body;
+      console.log(data);
       if (response.statusCode === 200 && data.length) {
         for (let i = 0; i < data.length; i++) {
           data[i].distance = _formatDistance(data[i].distance);
@@ -57,11 +57,10 @@ const doAddShop = function(req, res) {
     lng: req.body.shop_lng,
     lat: req.body.shop_lat,
     days: req.body.shop_opendays,
-    opening: req.body.shop_opening,
-    closing:req.body.shop_closing,
+    openingtime: req.body.shop_opening,
+    closingtime:req.body.shop_closing,
     closed:req.body.shop_open
   };
-  console.log(postdata)
   const requestOptions = {
     url : apiOptions.server + path,
     method : 'POST',
@@ -71,8 +70,11 @@ const doAddShop = function(req, res) {
       requestOptions,
       (err, response, body) => {
         if (response.statusCode === 201) {
-          res.redirect(`/location/${body._id}`);
-        }else {
+          res.redirect(`/shop`);
+        }else if(response.statusCode === 400 && body.name && body.name === 'ValidationError'){
+          res.redirect(`/shop/new?err=val`);
+        }
+        else {
           _showError(req, res, response.statusCode);
         }
       }
@@ -135,12 +137,11 @@ const _renderHomepage = function(req, res, responseBody){
     }
   }
   res.render('shop-list', {
-    title: 'Loc8r - find a place to work with wifi',
+    title: 'Food-Share',
     pageHeader: {
-      title: 'Loc8r',
-      strapline: 'Find places to work with wifi near you!'
+      title: 'Food-Share',
+      strapline: 'Promoting a circular economy'
     },
-    sidebar: 'Looking for wifi and a seat? Loc8r helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Loc8r help you find the place you\'re looking for.',
     shops: responseBody,
     message: message
   });
@@ -152,16 +153,13 @@ const _renderDetailPage = function(req, res, shopData,foodData) {
     pageHeader: {
       title: shopData.name
     },
-    sidebar: {
-      context: 'is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
-      callToAction: 'If you\'ve been and you like it - or if you don\'t - please leave a review to help other people just like you.'
-    },
     shop: shopData,
     foods: foodData
   });
 };
 
 const _renderAddShopForm = function(req, res) {
+  console.log(req.query.err);
   res.render('add-shop-form', {
     title: `Add New Shop`,
     pageHeader: { title: `New Shop` },
