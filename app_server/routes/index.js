@@ -3,7 +3,11 @@ const router = express.Router();
 const ctrlshop = require('../controllers/shop');
 const ctrlfood = require('../controllers/food');
 
+<<<<<<< HEAD
 /* shop pages */
+=======
+/* Locations pages */
+>>>>>>> f0eaa051b5a436959bcf2ce1a6176745b1a6b403
 router.get('/', ctrlfood.homelist);
 
 router
